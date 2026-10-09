@@ -1,0 +1,96 @@
+// ==============================================================================
+// 03_prescriptive_beed_measures.dax
+// Table: _Key_Measures
+// Domain: Predictive Actuarial Risk Scoring & 80:110 Beed Model Fiscal Simulation
+// ==============================================================================
+
+// --- Dynamic Composite Actuarial Risk Index (CARI) ---
+
+Composite Actuarial Risk Index (CARI) = 
+VAR AvgLCR = [Macro Loss Cost Ratio (LCR) %] * 100
+VAR AvgShortfall = [Weighted Yield Shortfall %]
+VAR VulnIndex = AVERAGE(dim_districts[vulnerability_index]) * 100
+RETURN
+(AvgLCR * 0.45) + (AvgShortfall * 0.30) + (VulnIndex * 0.25)
+
+Actuarial Risk Tier = 
+SWITCH(
+    TRUE(),
+    [Composite Actuarial Risk Index (CARI)] >= 70.0, "Tier 3: Severe Vulnerability",
+    [Composite Actuarial Risk Index (CARI)] >= 48.0, "Tier 2: Moderate Risk",
+    "Tier 1: Low Risk / Self-Sustaining"
+)
+
+Prescriptive Policy Action = 
+SWITCH(
+    TRUE(),
+    [Composite Actuarial Risk Index (CARI)] >= 70.0, "Mandate Beed Model (80:110) + Parametric Automatic Payouts",
+    [Composite Actuarial Risk Index (CARI)] >= 48.0, "Standard 50:50 Subsidy + Satellite NDVI Verification",
+    "Compress Actuarial Rate Loading by 25% + Straight-Through DBT"
+)
+
+// --- What-If Parameterized 80:110 Beed Model Simulation ---
+
+// Default Cup threshold = 80%, Cap threshold = 110%
+// Can be wired to Power BI Numeric Range Slicers (What-If Parameters):
+// 'Beed Parameters'[Cup Threshold Value] and 'Beed Parameters'[Cap Threshold Value]
+
+Selected Cup Threshold % = 
+SELECTEDVALUE('Beed_Parameters'[Cup_Threshold], 0.80)
+
+Selected Cap Threshold % = 
+SELECTEDVALUE('Beed_Parameters'[Cap_Threshold], 1.10)
+
+Beed State Clawback Surplus (₹ Cr) = 
+VAR ActualLCR = [Macro Loss Cost Ratio (LCR) %]
+VAR Cup = [Selected Cup Threshold %]
+VAR GrossPrem = [Total Gross Premium (₹ Cr)]
+RETURN
+IF(
+    ActualLCR < Cup,
+    GrossPrem * (Cup - ActualLCR),
+    0
+)
+
+Beed State Excess Liability (₹ Cr) = 
+VAR ActualLCR = [Macro Loss Cost Ratio (LCR) %]
+VAR Cap = [Selected Cap Threshold %]
+VAR GrossPrem = [Total Gross Premium (₹ Cr)]
+RETURN
+IF(
+    ActualLCR > Cap,
+    GrossPrem * (ActualLCR - Cap),
+    0
+)
+
+Beed Net State Fiscal Impact (₹ Cr) = 
+[Beed State Clawback Surplus (₹ Cr)] - [Beed State Excess Liability (₹ Cr)]
+
+Beed Model Fiscal Verdict = 
+IF(
+    [Beed Net State Fiscal Impact (₹ Cr)] >= 0,
+    "Favorable Fiscal Surplus (Buffer Generating)",
+    "Fiscal Deficit (Requires Catastrophic Reinsurance Pool)"
+)
+
+// --- Prescriptive Settlement Queue Prioritization ---
+
+Fast-Track Automated Claims (₹ Cr) = 
+CALCULATE(
+    [Total Claims Approved (₹ Cr)],
+    fact_pmfby_claims_enrolment[cce_discrepancy_rate_pct] < 4.0,
+    fact_pmfby_claims_enrolment[yield_shortfall_pct] >= 10.0
+)
+
+Remote Sensing Verified Claims (₹ Cr) = 
+CALCULATE(
+    [Total Claims Approved (₹ Cr)],
+    fact_pmfby_claims_enrolment[cce_discrepancy_rate_pct] >= 4.0,
+    fact_pmfby_claims_enrolment[cce_discrepancy_rate_pct] <= 8.0
+)
+
+Forensic Audit Queue Claims (₹ Cr) = 
+CALCULATE(
+    [Total Claims Approved (₹ Cr)],
+    fact_pmfby_claims_enrolment[cce_discrepancy_rate_pct] > 8.0
+)

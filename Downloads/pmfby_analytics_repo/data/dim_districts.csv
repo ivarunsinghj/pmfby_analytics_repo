@@ -1,0 +1,37 @@
+district_id,district_name,state_name,agro_climatic_zone,vulnerability_index
+MH01,Beed,Maharashtra,Western Plateau & Hills,0.88
+MH02,Jalna,Maharashtra,Western Plateau & Hills,0.82
+MH03,Latur,Maharashtra,Western Plateau & Hills,0.79
+MH04,Yavatmal,Maharashtra,Central Plateau & Hills,0.85
+MH05,Solapur,Maharashtra,Western Plateau & Hills,0.84
+MH06,Ahmednagar,Maharashtra,Western Plateau & Hills,0.75
+MP01,Ujjain,Madhya Pradesh,Central Plateau & Hills,0.65
+MP02,Sehore,Madhya Pradesh,Central Plateau & Hills,0.62
+MP03,Hoshangabad,Madhya Pradesh,Central Plateau & Hills,0.45
+MP04,Vidisha,Madhya Pradesh,Central Plateau & Hills,0.68
+MP05,Sagar,Madhya Pradesh,Central Plateau & Hills,0.7
+MP06,Dewas,Madhya Pradesh,Central Plateau & Hills,0.66
+RJ01,Hanumangarh,Rajasthan,Trans-Gangetic Plains,0.48
+RJ02,Barmer,Rajasthan,Western Dry Region,0.94
+RJ03,Jodhpur,Rajasthan,Western Dry Region,0.89
+RJ04,Kota,Rajasthan,Central Plateau & Hills,0.52
+RJ05,Nagaur,Rajasthan,Western Dry Region,0.86
+RJ06,Alwar,Rajasthan,Trans-Gangetic Plains,0.58
+UP01,Banda,Uttar Pradesh,Central Plateau & Hills (Bundelkhand),0.91
+UP02,Mahoba,Uttar Pradesh,Central Plateau & Hills (Bundelkhand),0.92
+UP03,Jhansi,Uttar Pradesh,Central Plateau & Hills (Bundelkhand),0.87
+UP04,Aligarh,Uttar Pradesh,Upper Gangetic Plains,0.42
+UP05,Barabanki,Uttar Pradesh,Middle Gangetic Plains,0.5
+UP06,Mirzapur,Uttar Pradesh,Middle Gangetic Plains,0.74
+OD01,Kalahandi,Odisha,Eastern Plateau & Hills,0.83
+OD02,Balangir,Odisha,Eastern Plateau & Hills,0.85
+OD03,Bargarh,Odisha,Eastern Plateau & Hills,0.55
+OD04,Cuttack,Odisha,East Coast Plains & Hills,0.6
+OD05,Puri,Odisha,East Coast Plains & Hills,0.78
+OD06,Koraput,Odisha,Eastern Plateau & Hills,0.72
+KA01,Kalaburagi,Karnataka,Southern Plateau & Hills,0.86
+KA02,Vijayapura,Karnataka,Southern Plateau & Hills,0.84
+KA03,Belagavi,Karnataka,Southern Plateau & Hills,0.54
+KA04,Haveri,Karnataka,Southern Plateau & Hills,0.62
+KA05,Dharwad,Karnataka,Southern Plateau & Hills,0.59
+KA06,Tumakuru,Karnataka,Southern Plateau & Hills,0.76

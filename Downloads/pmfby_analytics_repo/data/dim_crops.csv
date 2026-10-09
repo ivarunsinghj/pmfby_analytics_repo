@@ -1,0 +1,11 @@
+crop_id,crop_name,category,standard_season,farmer_premium_rate_pct,base_sum_insured_ha
+CR01,Soybean,Oilseeds,Kharif,2.0,42000
+CR02,Paddy,Foodgrains (Cereals),Kharif,2.0,55000
+CR03,Cotton,Commercial Crops,Kharif,5.0,62000
+CR04,Bajra (Pearl Millet),Coarse Cereals,Kharif,2.0,28000
+CR05,Tur (Arhar),Pulses,Kharif,2.0,38000
+CR06,Wheat,Foodgrains (Cereals),Rabi,1.5,58000
+CR07,Mustard,Oilseeds,Rabi,1.5,36000
+CR08,Gram (Chickpea),Pulses,Rabi,1.5,40000
+CR09,Rabi Jowar (Sorghum),Coarse Cereals,Rabi,1.5,31000
+CR10,Groundnut,Oilseeds,Kharif,2.0,45000

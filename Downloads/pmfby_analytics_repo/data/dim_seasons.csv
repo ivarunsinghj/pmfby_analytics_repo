@@ -1,0 +1,11 @@
+season_id,year,season,climate_character
+2019_K,2019,Kharif,Heavy Monsoon Withdrawal / Localized Floods
+2019_R,2020,Rabi,Normal Winter / Moderate Hail in Central India
+2020_K,2020,Kharif,COVID-19 Disruption / Surplus Monsoon
+2020_R,2021,Rabi,Bumper Harvest / Favorable Temperatures
+2021_K,2021,Kharif,Extended Dry Spells in West / Late Surges
+2021_R,2022,Rabi,Severe March Heatwave (Terminal Heat Shock)
+2022_K,2022,Kharif,Uneven Spatial Rainfall / Eastern Deficit
+2022_R,2023,Rabi,Unseasonal March Rains & Hailstorm
+2023_K,2023,Kharif,Severe El Niño Dry August / Western Drought
+2023_R,2024,Rabi,Warm Winter / Variable Pulse Yields

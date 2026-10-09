@@ -1,0 +1,86 @@
+// ==============================================================================
+// 01_kpi_measures.dax
+// Table: _Key_Measures
+// Domain: PMFBY Actuarial & Core Operational KPIs
+// ==============================================================================
+
+// --- Volume & Participation Metrics ---
+
+Total Farmer Applications = 
+SUM(fact_pmfby_claims_enrolment[total_farmers_enrolled])
+
+Loanee Applications = 
+SUM(fact_pmfby_claims_enrolment[farmer_applications_loanee])
+
+Non-Loanee Applications = 
+SUM(fact_pmfby_claims_enrolment[farmer_applications_non_loanee])
+
+Non-Loanee Share % = 
+DIVIDE([Non-Loanee Applications], [Total Farmer Applications], 0)
+
+Small & Marginal Farmers = 
+SUM(fact_pmfby_claims_enrolment[small_marginal_farmers])
+
+Smallholder Inclusion Rate % = 
+DIVIDE([Small & Marginal Farmers], [Total Farmer Applications], 0)
+
+Total Insured Area (Hectares) = 
+SUM(fact_pmfby_claims_enrolment[insured_area_ha])
+
+Total Insured Area (Million Ha) = 
+DIVIDE([Total Insured Area (Hectares)], 1000000, 0)
+
+// --- Financial Underwriting & Subsidy Metrics ---
+
+Total Sum Insured (₹ Cr) = 
+SUM(fact_pmfby_claims_enrolment[sum_insured_inr_crores])
+
+Total Gross Premium (₹ Cr) = 
+SUM(fact_pmfby_claims_enrolment[gross_premium_inr_crores])
+
+Farmer Premium Contribution (₹ Cr) = 
+SUM(fact_pmfby_claims_enrolment[farmer_premium_inr_crores])
+
+Central Subsidy Share (₹ Cr) = 
+SUM(fact_pmfby_claims_enrolment[central_subsidy_inr_crores])
+
+State Subsidy Share (₹ Cr) = 
+SUM(fact_pmfby_claims_enrolment[state_subsidy_inr_crores])
+
+Total Government Subsidy (₹ Cr) = 
+[Central Subsidy Share (₹ Cr)] + [State Subsidy Share (₹ Cr)]
+
+Government Subsidy Ratio % = 
+DIVIDE([Total Government Subsidy (₹ Cr)], [Total Gross Premium (₹ Cr)], 0)
+
+Weighted Actuarial Premium Rate % = 
+DIVIDE([Total Gross Premium (₹ Cr)], [Total Sum Insured (₹ Cr)], 0)
+
+// --- Claims & Loss-Cost Performance ---
+
+Total Claims Reported (₹ Cr) = 
+SUM(fact_pmfby_claims_enrolment[claims_reported_inr_crores])
+
+Total Claims Approved (₹ Cr) = 
+SUM(fact_pmfby_claims_enrolment[claims_approved_inr_crores])
+
+Total Claims Rejected (₹ Cr) = 
+SUM(fact_pmfby_claims_enrolment[claims_rejected_inr_crores])
+
+Total Claims Paid (₹ Cr) = 
+SUM(fact_pmfby_claims_enrolment[claims_paid_inr_crores])
+
+Pending Claims Disbursal (₹ Cr) = 
+[Total Claims Approved (₹ Cr)] - [Total Claims Paid (₹ Cr)]
+
+Claim Rejection Rate % = 
+DIVIDE([Total Claims Rejected (₹ Cr)], [Total Claims Reported (₹ Cr)], 0)
+
+Disbursement Fulfillment Rate % = 
+DIVIDE([Total Claims Paid (₹ Cr)], [Total Claims Approved (₹ Cr)], 0)
+
+Macro Loss Cost Ratio (LCR) % = 
+DIVIDE([Total Claims Paid (₹ Cr)], [Total Gross Premium (₹ Cr)], 0)
+
+Net Underwriting Balance (₹ Cr) = 
+[Total Gross Premium (₹ Cr)] - [Total Claims Paid (₹ Cr)]

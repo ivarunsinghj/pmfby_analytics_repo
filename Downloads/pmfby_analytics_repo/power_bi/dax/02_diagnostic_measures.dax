@@ -1,0 +1,93 @@
+// ==============================================================================
+// 02_diagnostic_measures.dax
+// Table: _Key_Measures
+// Domain: Diagnostic Root-Cause, Settlement Latency & Actuarial Anomaly Measures
+// ==============================================================================
+
+// --- Settlement Turnaround Time (TAT) Diagnostics ---
+
+Average Settlement TAT (Days) = 
+AVERAGE(fact_pmfby_claims_enrolment[claim_settlement_tat_days])
+
+Average State Subsidy Delay (Days) = 
+AVERAGE(fact_pmfby_claims_enrolment[state_subsidy_delay_days])
+
+TAT Delay Differential (Days) = 
+CALCULATE([Average Settlement TAT (Days)], fact_pmfby_claims_enrolment[state_subsidy_status] IN {"Delayed 3-6 Months", "Delayed >6 Months"}) -
+CALCULATE([Average Settlement TAT (Days)], fact_pmfby_claims_enrolment[state_subsidy_status] = "Settled on Time")
+
+Severe Latency Cases Count = 
+CALCULATE(
+    COUNTROWS(fact_pmfby_claims_enrolment),
+    fact_pmfby_claims_enrolment[claim_settlement_tat_days] > 180
+)
+
+// --- Crop Cut Experiment (CCE) Telemetry & Dispute Friction ---
+
+Total Planned CCEs = 
+SUM(fact_pmfby_claims_enrolment[planned_cces])
+
+Total Conducted CCEs = 
+SUM(fact_pmfby_claims_enrolment[conducted_cces])
+
+CCE Execution Completion Rate % = 
+DIVIDE([Total Conducted CCEs], [Total Planned CCEs], 0)
+
+Average CCE Discrepancy Rate % = 
+AVERAGE(fact_pmfby_claims_enrolment[cce_discrepancy_rate_pct])
+
+Dispute Driven Rejection Impact % = 
+CALCULATE([Claim Rejection Rate %], fact_pmfby_claims_enrolment[cce_discrepancy_rate_pct] >= 10.0) -
+CALCULATE([Claim Rejection Rate %], fact_pmfby_claims_enrolment[cce_discrepancy_rate_pct] < 5.0)
+
+// --- Yield & Weather Stress Indices ---
+
+Average Rainfall Departure % = 
+AVERAGE(fact_pmfby_claims_enrolment[rainfall_departure_pct])
+
+Average Dry Spell Duration (Days) = 
+AVERAGE(fact_pmfby_claims_enrolment[dry_spell_duration_days])
+
+Weighted Yield Shortfall % = 
+DIVIDE(
+    SUMX(fact_pmfby_claims_enrolment, fact_pmfby_claims_enrolment[yield_shortfall_pct] * fact_pmfby_claims_enrolment[insured_area_ha]),
+    SUM(fact_pmfby_claims_enrolment[insured_area_ha]),
+    0
+)
+
+// --- Adverse Selection Diagnostics (Non-Loanee vs Loanee) ---
+
+Average Non-Loanee Loss Multiplier = 
+AVERAGE(fact_pmfby_claims_enrolment[non_loanee_loss_multiplier])
+
+Adverse Selection Risk Flag = 
+IF([Average Non-Loanee Loss Multiplier] >= 1.25, "High Adverse Selection Risk", "Normal Enrollment Spread")
+
+// --- Statistical Outlier Detection (Z-Score of LCR across Agro-Climatic Zone) ---
+
+Zone Mean LCR % = 
+CALCULATE(
+    AVERAGE(fact_pmfby_claims_enrolment[loss_cost_ratio_pct]),
+    ALLEXCEPT(dim_districts, dim_districts[agro_climatic_zone])
+)
+
+Zone StdDev LCR % = 
+CALCULATE(
+    STDEV.P(fact_pmfby_claims_enrolment[loss_cost_ratio_pct]),
+    ALLEXCEPT(dim_districts, dim_districts[agro_climatic_zone])
+)
+
+District LCR Z-Score = 
+DIVIDE(
+    [Macro Loss Cost Ratio (LCR) %] * 100 - [Zone Mean LCR %],
+    [Zone StdDev LCR %],
+    0
+)
+
+Underwriting Anomaly Status = 
+SWITCH(
+    TRUE(),
+    [District LCR Z-Score] >= 2.0, "🔴 Extreme Loss Outlier (Z >= 2.0)",
+    [District LCR Z-Score] <= -1.5, "🟢 Super-Normal Retention (Z <= -1.5)",
+    "⚪ Normal Actuarial Variance"
+)
